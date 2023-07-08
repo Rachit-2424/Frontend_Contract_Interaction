@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CONNECTION TO METAMASK</title>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.2.7-rc.0/web3.min.js"></script>
+    <style>
+        body {
+            background-color: whitesmoke;
+            font-size: 20px;
+            text-align:center;
+        }
+        button {
+            background-color: aquamarine;
+            font-size: 20px;
+            font-family: cursive, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+            margin: 25px;
+            
+            
+            height: 50px;
+            width: fit-content;
+            border-radius: 20px;
+            background: cadetblue;
+            font-weight: bold;
+        }
+        button:hover {
+            background-color: white;
+        }
+        .button-with-value {
+            display: inline-flex;
+            align-items: center;
+            width: 100%;
+            flex-direction: row;
+            background-color: #D3D3D3;
+            height: 25vh;
+            box-shadow: 5px 10px 8px #888888;
+            border-radius: 20px;
+            justify-content: center;
+        }
+        
+    </style>
+</head>
+<body>
+        <div class="button-with-value">
+            <button onclick="connectMetamask()">CONNECT TO METAMASK</button>
+            <span><p id="accountArea"></p></span>
+        </div>
+            <button onclick="connectContract()">CONNECT TO CONTRACT</button> 
+            <p id="contractArea"></p>
+            <button onclick="readContract()">GET STATUS</button> <br>
+            <p id="dataArea"></p>
+            <button onclick="readContractSum()">GET ADDITION(3,5)</button> <br>
+            <p id="dataArea2"></p>
+            <button onclick="readContractSub()">GET SUBTRACTION(5,3)</button> <br>
+            <p id="dataArea3"></p>
+    
+
+    
+     <script>
+        //1- connect metamask
+        let account;
+        const connectMetamask = async () => {
+            if(window.ethereum !== "undefined") {
+                const accounts = await ethereum.request({method: "eth_requestAccounts"});
+                account = accounts[0];
+                document.getElementById("accountArea").innerHTML = account;
+            }
+        }
+
+        //2- connect to smart contract
+         const connectContract = async () => {
+            const ABI = [
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "x",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "y",
+				"type": "uint256"
+			}
+		],
+		"name": "getSum",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"inputs": [],
+		"name": "getMessage",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "x",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "y",
+				"type": "uint256"
+			}
+		],
+		"name": "getSub",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "pure",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "number",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "status",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	}
+]
+            const Address = "0x276720F34aa8D6e998608E82fC9383D0F9f12199";
+            window.web3 = await new Web3(window.ethereum);
+            window.contract = await new window.web3.eth.Contract( ABI, Address); //instance of the contract
+            document.getElementById("contractArea").innerHTML = "connected to smart contract";
+        }
+
+        //3-read data from smart contract
+        
+        const readContract = async () => {
+            const data = await window.contract.methods.getMessage().call();
+            document.getElementById("dataArea").innerHTML = data;
+        }
+
+        const readContractSum = async () => {
+            const data = await window.contract.methods.getSum(3,5).call();
+            document.getElementById("dataArea2").innerHTML = data;
+        }
+
+        const readContractSub = async () => {
+            const data = await window.contract.methods.getSub(5,3).call();
+            document.getElementById("dataArea3").innerHTML = data;
+        }
+        
+    </script>
+ 
+</body>
+</html>
