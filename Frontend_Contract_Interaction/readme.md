@@ -42,5 +42,6 @@ If you prefer to use a different version or host the library locally, update the
 
 ## Author
 
-Kislay Kaushal
+Rachit Gupta
+
 
